@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-
 class SendMail:
     """Handles email creation and sending."""
 
@@ -54,11 +52,11 @@ class SendMail:
             msg.add_attachment(file_data, maintype=maintype, subtype=subtype, filename=file_name)
         return msg
 
-    def send(self, sender_password):
+    def send(self):
         try:
             login_email = self.sender_mail if self.sender_mail else os.getenv("default_email")
             with smtplib.SMTP_SSL(host="smtp.gmail.com", port=465) as smtp:
-                smtp.login(user=login_email, password=sender_password)
+                smtp.login(user=login_email, password=os.getenv("gmail_app_pass"))
                 smtp.send_message(self.build_message())
             return True  # Email sent successfully
         except Exception as e:

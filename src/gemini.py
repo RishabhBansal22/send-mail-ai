@@ -3,9 +3,6 @@ from google import genai
 from google.genai import types
 from prompts.system import system_instruction
 from .send_mail import SendMail
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class GeminiAssistant:
     """Handles Gemini API interaction and tool invocation."""
@@ -21,7 +18,7 @@ class GeminiAssistant:
             content=arguments["content"],
             attachment=arguments.get("attachment")
         )
-        success = send_mail.send(sender_password=os.getenv("gmail_app_pass"))
+        success = send_mail.send()
         if success:
             print("Email sent successfully!")
         else:
@@ -46,4 +43,5 @@ class GeminiAssistant:
             function_call = parts[0].function_call
             if function_call is not None and getattr(function_call, "name", None) == "mail_client":
                 self.handle_email_function(function_call.args)
-        return generate_response.text
+                
+        return generate_response
