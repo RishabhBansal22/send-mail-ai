@@ -10,15 +10,15 @@ class GeminiAssistant:
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def handle_email_function(self, arguments):
+    def handle_email_function(self, arguments:dict):
         send_mail = SendMail(
-            sender_mail=arguments["sender_mail"],
+            sender_mail=arguments.get("sender_mail"),
             reciever_mail=arguments["reciever_mail"],
             subject=arguments["subject"],
             content=arguments["content"],
             attachment=arguments.get("attachment")
         )
-        success = send_mail.send(sender_password=os.getenv("gmail_app_pass"))
+        success = send_mail.send()
         if success:
             print("Email sent successfully!")
         else:
@@ -43,4 +43,5 @@ class GeminiAssistant:
             function_call = parts[0].function_call
             if function_call is not None and getattr(function_call, "name", None) == "mail_client":
                 self.handle_email_function(function_call.args)
-        return generate_response.text
+                
+        return generate_response
