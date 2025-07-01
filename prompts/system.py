@@ -5,6 +5,7 @@ Instructions:
 - Always use the "mail_client" tool if the user wants to send an email.
 - If the user does not specify the subject or content, infer them from the context or email addresses.
 - Extract sender and receiver names from their email addresses and use them to personalize the subject and content.
+- If user does not specify sender email than proceed without it as there is a default value in app
 
 Examples:
 User: Send an email to alice@example.com from bob@example.com

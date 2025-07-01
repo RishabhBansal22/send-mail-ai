@@ -3,6 +3,9 @@ from google import genai
 from google.genai import types
 from prompts.system import system_instruction
 from .send_mail import SendMail
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class GeminiAssistant:
     """Handles Gemini API interaction and tool invocation."""
@@ -10,9 +13,9 @@ class GeminiAssistant:
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def handle_email_function(self, arguments):
+    def handle_email_function(self, arguments:dict):
         send_mail = SendMail(
-            sender_mail=arguments["sender_mail"],
+            sender_mail=arguments.get("sender_mail"),
             reciever_mail=arguments["reciever_mail"],
             subject=arguments["subject"],
             content=arguments["content"],

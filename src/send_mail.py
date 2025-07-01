@@ -2,6 +2,11 @@ import smtplib
 from email.message import EmailMessage
 import mimetypes
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 
 class SendMail:
     """Handles email creation and sending."""
@@ -18,7 +23,7 @@ class SendMail:
                 "content": {"type": "string", "description": "body of the email"},
                 "attachment": {"type": "string", "description": "path to attachment"}
             },
-            "required": ["sender_mail", "reciever_mail", "subject", "content"],
+            "required": ["reciever_mail", "subject", "content"],
         },
     }
 
@@ -32,7 +37,11 @@ class SendMail:
     def build_message(self):
         msg = EmailMessage()
         msg["Subject"] = self.subject
-        msg["From"] = self.sender_mail
+        if self.sender_mail:
+            msg["From"] = self.sender_mail
+        else:
+            msg["From"] = os.getenv("default_email")
+
         msg["To"] = self.reciever_mail
         msg.set_content(self.content)
 
@@ -47,8 +56,9 @@ class SendMail:
 
     def send(self, sender_password):
         try:
+            login_email = self.sender_mail if self.sender_mail else os.getenv("default_email")
             with smtplib.SMTP_SSL(host="smtp.gmail.com", port=465) as smtp:
-                smtp.login(user=self.sender_mail, password=sender_password)
+                smtp.login(user=login_email, password=sender_password)
                 smtp.send_message(self.build_message())
             return True  # Email sent successfully
         except Exception as e:
